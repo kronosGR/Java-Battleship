@@ -1,0 +1,8 @@
+# Project exclude paths
+/.gradle/
+/Topics/Exception handling/Converting and multiplying/out/
+/Topics/Exception handling/Converting and multiplying/out/production/classes/
+/Topics/Input streams/Convert to bytes/out/
+/Topics/Input streams/Convert to bytes/out/production/classes/
+/Topics/Throwing exceptions/Days of the week/out/
+/Topics/Throwing exceptions/Days of the week/out/production/classes/
