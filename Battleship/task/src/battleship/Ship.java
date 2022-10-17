@@ -7,7 +7,7 @@ public class Ship {
     private int cellsAmount;
 
     public Ship(int index, String name, int cellsAmount) {
-        this.index = index
+        this.index = index;
         this.name = name;
         this.cellsAmount = cellsAmount;
     }
@@ -35,4 +35,5 @@ public class Ship {
     public void setIndex(int index) {
         this.index = index;
     }
+
 }

@@ -3,10 +3,12 @@ package battleship;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class Battleship {
     private String[][] board = new String[10][10];
     private List<Ship> ships = new ArrayList<>();
+    private Scanner sc = new Scanner(System.in);
 
     private void initializeBoard() {
         Arrays.stream(this.board).forEach(row -> Arrays.fill(row, "~"));
@@ -84,11 +86,42 @@ public class Battleship {
         return -1;
     }
 
+    private Ship getShipWithIndex(int index) {
+        for (Ship tmp : ships) {
+            if (tmp.getIndex() == index) {
+                return tmp;
+            }
+        }
+        return null;
+    }
+
+    private void askForShips() {
+        for (int i = 1; i <= ships.size(); i++) {
+            Ship tmp = getShipWithIndex(i);
+            String text = String.format("Enter the coordinate for the %s (%d cells):", tmp.getName(), tmp.getCellsAmount());
+            System.out.println(text);
+
+            // ask for coordinates
+            String coords = sc.nextLine();
+            if(Coordinates.isValidCords(coords)) {
+                Coordinates cords = new Coordinates(coords);
+                String from = cords.getFrom();
+                String to = cords.getTo();
+
+                // add to board
+                // TODO check if all cells are free and inside the board
+            }
+
+        }
+    }
+
     public Battleship() {
         this.initializeBoard();
+        this.initializeShips();
     }
 
     public void start() {
         this.printBoard();
+        this.askForShips();
     }
 }

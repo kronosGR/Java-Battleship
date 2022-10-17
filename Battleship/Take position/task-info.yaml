@@ -288,6 +288,9 @@ files:
 - name: src/battleship/Ship.java
   visible: true
   learner_created: true
+- name: src/battleship/Coordinates.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/10594#comment
 status: Unchecked
 record: -1
