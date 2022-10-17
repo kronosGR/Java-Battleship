@@ -285,6 +285,9 @@ files:
 - name: src/battleship/Battleship.java
   visible: true
   learner_created: true
-feedback_link: https://hyperskill.org/projects/125/stages/663/implement#comment
+- name: src/battleship/Ship.java
+  visible: true
+  learner_created: true
+feedback_link: https://hyperskill.org/learn/step/10594#comment
 status: Unchecked
 record: -1
