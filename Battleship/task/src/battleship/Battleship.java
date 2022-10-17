@@ -1,12 +1,23 @@
 package battleship;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Battleship {
     private String[][] board = new String[10][10];
+    private List<Ship> ships = new ArrayList<>();
 
     private void initializeBoard() {
         Arrays.stream(this.board).forEach(row -> Arrays.fill(row, "~"));
+    }
+
+    private void initializeShips() {
+        ships.add(new Ship(1, "Aircraft Carrier", 5));
+        ships.add(new Ship(2, "Battleship", 4));
+        ships.add(new Ship(3, "Submarine", 3));
+        ships.add(new Ship(4, "Cruise", 3));
+        ships.add(new Ship(5, "Destroyer", 2));
     }
 
     private void printBoard() {
