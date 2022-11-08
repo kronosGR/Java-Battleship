@@ -5,12 +5,19 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="delegatedBuild" value="false" />
+        <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Battleship/task" />
+            <option value="$PROJECT_DIR$/Battleship/task/build/classes/java" />
+            <option value="$PROJECT_DIR$/Battleship/task/build/generated/sources/annotationProcessor/java" />
+            <option value="$PROJECT_DIR$/Battleship/task/build/generated/sources/headers/java" />
+            <option value="$PROJECT_DIR$/Battleship/task/build/reports/tests" />
+            <option value="$PROJECT_DIR$/Battleship/task/build/test-results" />
+            <option value="$PROJECT_DIR$/Battleship/task/build/tmp" />
             <option value="$PROJECT_DIR$/Topics/Custom exceptions/Custom exceptions features" />
             <option value="$PROJECT_DIR$/Topics/Custom exceptions/Square class" />
             <option value="$PROJECT_DIR$/Topics/Custom exceptions/Theory" />
@@ -22,6 +29,10 @@
             <option value="$PROJECT_DIR$/Topics/Files/Are siblings" />
             <option value="$PROJECT_DIR$/Topics/Files/Getting information" />
             <option value="$PROJECT_DIR$/Topics/Files/Theory" />
+            <option value="$PROJECT_DIR$/Topics/Floating-point types/Determine the integer part" />
+            <option value="$PROJECT_DIR$/Topics/Floating-point types/Difference between two doubles" />
+            <option value="$PROJECT_DIR$/Topics/Floating-point types/Statements" />
+            <option value="$PROJECT_DIR$/Topics/Floating-point types/Theory" />
             <option value="$PROJECT_DIR$/Topics/Input streams/Convert to bytes" />
             <option value="$PROJECT_DIR$/Topics/Input streams/Theory" />
             <option value="$PROJECT_DIR$/Topics/Throwing exceptions/Days of the week" />
@@ -29,6 +40,8 @@
             <option value="$PROJECT_DIR$/Topics/Throwing exceptions/Throw a checked exception" />
             <option value="$PROJECT_DIR$/Topics/Throwing exceptions/Throw an IOException" />
             <option value="$PROJECT_DIR$/Topics/Throwing exceptions/Throw an unchecked exception" />
+            <option value="$PROJECT_DIR$/Topics/Types of references/Get the sum square of variables" />
+            <option value="$PROJECT_DIR$/Topics/Types of references/Theory" />
             <option value="$PROJECT_DIR$/util" />
           </set>
         </option>

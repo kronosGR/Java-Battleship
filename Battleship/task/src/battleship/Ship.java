@@ -6,6 +6,17 @@ public class Ship {
     private String name;
     private int cellsAmount;
 
+    public boolean isPlaced() {
+        return isPlaced;
+    }
+
+    public Coordinates getCoords() {
+        return coords;
+    }
+
+    private boolean isPlaced = false;
+    private Coordinates coords;
+
     public Ship(int index, String name, int cellsAmount) {
         this.index = index;
         this.name = name;
@@ -36,4 +47,8 @@ public class Ship {
         this.index = index;
     }
 
+    public void placeShip(Coordinates cords){
+        isPlaced = true;
+        coords = cords;
+    }
 }

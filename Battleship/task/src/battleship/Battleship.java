@@ -5,20 +5,30 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import static battleship.Coordinates.indexToLetter;
+import static battleship.Coordinates.letterToIndex;
+
 public class Battleship {
     private String[][] board = new String[10][10];
     private List<Ship> ships = new ArrayList<>();
+    Ship[] placedShips;
     private Scanner sc = new Scanner(System.in);
 
+    private static String CELL_SHIP = "O";
+    private static String CELL_EMPTY = "~";
+    private static String CELL_HIT = "X";
+    private static String CELL_MISS = "M";
+
+
     private void initializeBoard() {
-        Arrays.stream(this.board).forEach(row -> Arrays.fill(row, "~"));
+        Arrays.stream(this.board).forEach(row -> Arrays.fill(row, CELL_EMPTY));
     }
 
     private void initializeShips() {
         ships.add(new Ship(1, "Aircraft Carrier", 5));
         ships.add(new Ship(2, "Battleship", 4));
         ships.add(new Ship(3, "Submarine", 3));
-        ships.add(new Ship(4, "Cruise", 3));
+        ships.add(new Ship(4, "Cruiser", 3));
         ships.add(new Ship(5, "Destroyer", 2));
     }
 
@@ -34,58 +44,6 @@ public class Battleship {
         }
     }
 
-    private String indexToLetter(int idx) {
-        switch (idx) {
-            case 0:
-                return "a";
-            case 1:
-                return "b";
-            case 2:
-                return "c";
-            case 3:
-                return "d";
-            case 4:
-                return "e";
-            case 5:
-                return "f";
-            case 6:
-                return "g";
-            case 7:
-                return "h";
-            case 8:
-                return "i";
-            case 9:
-                return "j";
-        }
-        return "";
-    }
-
-    private int letterToIndex(String letter) {
-        switch (letter) {
-            case "a":
-                return 0;
-            case "b":
-                return 1;
-            case "c":
-                return 2;
-            case "d":
-                return 3;
-            case "e":
-                return 4;
-            case "f":
-                return 5;
-            case "g":
-                return 6;
-            case "h":
-                return 7;
-            case "i":
-                return 8;
-            case "j":
-                return 9;
-        }
-        return -1;
-    }
-
     private Ship getShipWithIndex(int index) {
         for (Ship tmp : ships) {
             if (tmp.getIndex() == index) {
@@ -95,21 +53,129 @@ public class Battleship {
         return null;
     }
 
+    private boolean isSizeCorrect(Ship ship, Coordinates cords) {
+        if (goingVertically(cords.getFromX(), cords.getToX())) {
+            return Math.abs(letterToIndex(cords.getToY()) - letterToIndex(cords.getFromY())) == ship.getCellsAmount() - 1;
+        } else if (goingHorizontally(cords.getFromY(), cords.getToY())) {
+            return Math.abs(Integer.parseInt(cords.getToX()) - Integer.parseInt(cords.getFromX())) == ship.getCellsAmount() - 1;
+        }
+        return false;
+    }
+
+    private boolean isLine(Coordinates cords) {
+        return cords.getToX().equals(cords.getFromX()) || cords.getToY().equals(cords.getFromY());
+    }
+
+    private boolean isClose(Ship _ship, Coordinates coords) {
+        for (Ship ship : ships) {
+            if (ship != _ship && ship.isPlaced()) {
+                for (int i = coords.getFromYn(); i <= coords.getToYn() + 1; i++) {
+                    for (int j = coords.getFromXn(); j <= coords.getToXn() + 1; j++) {
+                        if ((i == ship.getCoords().getFromYn() && j == ship.getCoords().getFromXn())
+                                || (i == ship.getCoords().getToYn() && j == ship.getCoords().getToXn())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private void addShip(Ship ship, Coordinates cords) {
+
+        if (goingVertically(cords.getFromX(), cords.getToX())) {
+            // vertically
+            for (int i = 0; i < ship.getCellsAmount(); i++) {
+                board[letterToIndex(cords.getFromY()) + i][Integer.parseInt(cords.getFromX()) - 1] = CELL_SHIP;
+                ship.placeShip(cords);
+            }
+        } else if (goingHorizontally(cords.getFromY(), cords.getToY())) {
+            // horizontally
+            for (int i = 0; i < ship.getCellsAmount(); i++) {
+                board[letterToIndex(cords.getFromY())][Integer.parseInt(cords.getFromX()) + i - 1] = CELL_SHIP;
+                ship.placeShip(cords);
+            }
+        }
+    }
+
+    private static Coordinates checkCordsAndReverse(Coordinates cords) {
+        // check and reverse cords
+        if (Integer.parseInt(cords.getFromX()) > Integer.parseInt(cords.getToX())
+                || letterToIndex(cords.getFromY()) > letterToIndex(cords.getToY())) {
+            String tmp = cords.getFrom();
+            cords.setFrom(cords.getTo());
+            cords.setTo(tmp);
+        }
+        return cords;
+    }
+
+    private static boolean goingVertically(String fromX, String toX) {
+        return fromX.equals(toX);
+    }
+
+    private static boolean goingHorizontally(String fromY, String toY) {
+        return fromY.equals(toY);
+    }
+
     private void askForShips() {
         for (int i = 1; i <= ships.size(); i++) {
             Ship tmp = getShipWithIndex(i);
-            String text = String.format("Enter the coordinate for the %s (%d cells):", tmp.getName(), tmp.getCellsAmount());
+            int shipLength = tmp.getCellsAmount();
+            System.out.println();
+            String text = String.format("Enter the coordinates of the %s (%d cells):", tmp.getName(), shipLength);
             System.out.println(text);
 
             // ask for coordinates
             String coords = sc.nextLine();
-            if(Coordinates.isValidCords(coords)) {
+            if (Coordinates.isValidCords(coords)) {
                 Coordinates cords = new Coordinates(coords);
-                String from = cords.getFrom();
-                String to = cords.getTo();
+                cords = checkCordsAndReverse(cords);
 
-                // add to board
-                // TODO check if all cells are free and inside the board
+                // check if is line
+                if (!isLine(cords)) {
+                    System.out.println("Error! Wrong ship location! Try again:");
+                    while (true) {
+                        coords = sc.nextLine();
+                        Coordinates tmpC = new Coordinates(coords);
+                        cords = checkCordsAndReverse(tmpC);
+                        if (isLine(cords)) {
+                            break;
+                        }
+                        System.out.println("Error! Wrong ship location! Try again:");
+                    }
+                }
+
+                // check if size is correct
+                if (!isSizeCorrect(tmp, cords)) {
+                    System.out.println("Error! Wrong length of the " + tmp.getName() + "! Try again:");
+                    while (true) {
+                        coords = sc.nextLine();
+                        Coordinates tmpC = new Coordinates(coords);
+                        cords = checkCordsAndReverse(tmpC);
+                        if (isSizeCorrect(tmp, cords)) {
+                            break;
+                        }
+                        System.out.println("Error! Wrong length of the " + tmp.getName() + "! Try again:");
+                    }
+                }
+
+                // check if close to another
+                if (isClose(tmp, cords)) {
+                    System.out.println("Error! You placed it too close to another one. Try again:");
+                    while (true) {
+                        coords = sc.nextLine();
+                        Coordinates tmpC = new Coordinates(coords);
+                        cords = checkCordsAndReverse(tmpC);
+                        if (!isClose(tmp, cords)) {
+                            break;
+                        }
+                        System.out.println("Error! You placed it too close to another one. Try again:");
+                    }
+                }
+
+                addShip(tmp, cords);
+                printBoard();
             }
 
         }
