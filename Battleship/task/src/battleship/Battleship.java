@@ -181,6 +181,31 @@ public class Battleship {
         }
     }
 
+    private void makeShot(){
+        System.out.println("The game starts!");
+        System.out.println("Take a shot");
+
+        while(true){
+            String cell = sc.nextLine();
+            int shotRow = cell.charAt(0) - 65;
+            int shotColumn = Integer.parseInt(cell.substring(1)) - 1;
+            if (shotRow < 0 || shotRow > 9 || shotColumn < 0 || shotColumn > 9) {
+                System.out.println("Error! You entered the wrong coordinates! Try again:");
+            } else {
+                if (this.board[shotRow][shotColumn] == CELL_EMPTY) {
+                    this.board[shotRow][shotColumn] = CELL_MISS;
+                    printBoard();
+                    System.out.println("You missed!");
+                } else {
+                    this.board[shotRow][shotColumn] = CELL_HIT;
+                    printBoard();
+                    System.out.println("You hit a ship!");
+                }
+                break;
+            }
+        }
+
+    }
     public Battleship() {
         this.initializeBoard();
         this.initializeShips();
@@ -189,5 +214,6 @@ public class Battleship {
     public void start() {
         this.printBoard();
         this.askForShips();
+        this.makeShot();
     }
 }
