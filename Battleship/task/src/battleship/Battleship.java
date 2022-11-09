@@ -39,7 +39,7 @@ public class Battleship {
             System.out.print(indexToLetter(y).toUpperCase());
             for (int x = 0; x < this.board[y].length; x++) {
                 if (fow && this.board[y][x].equals(CELL_SHIP)) {
-                    System.out.print(" ~" );
+                    System.out.print(" ~");
                 } else {
                     System.out.print(" " + this.board[y][x]);
                 }
@@ -185,35 +185,69 @@ public class Battleship {
         }
     }
 
-    private void makeShot(){
+    private void makeShot() {
         System.out.println();
         System.out.println("The game starts!");
         System.out.println();
         printBoard(true);
         System.out.println("Take a shot");
 
-        while(true){
+        while (true) {
             String cell = sc.nextLine();
             int shotRow = cell.charAt(0) - 65;
             int shotColumn = Integer.parseInt(cell.substring(1)) - 1;
             if (shotRow < 0 || shotRow > 9 || shotColumn < 0 || shotColumn > 9) {
                 System.out.println("Error! You entered the wrong coordinates! Try again:");
             } else {
-                if (this.board[shotRow][shotColumn] == CELL_EMPTY) {
+                boolean isHitOnShip = false;
+                boolean isSankAShip = false;
+                boolean isEndGame = true;
+
+                for (Ship ship : ships) {
+                    if (shotRow == ship.getCoords().getFromYn() && shotRow == ship.getCoords().getToYn()) {
+                        if (shotColumn >= ship.getCoords().getFromXn() - 1 && shotColumn <= ship.getCoords().getToXn() - 1) {
+                            isHitOnShip = true;
+                            isSankAShip = ship.isFinalHit(shotColumn - ship.getCoords().getFromXn()+1);
+                            this.board[shotRow][shotColumn] = CELL_HIT;
+                            break;
+                        }
+                    } else if (shotColumn == ship.getCoords().getFromXn() - 1 && shotColumn == ship.getCoords().getToXn() - 1) {
+                        if ((shotRow >= ship.getCoords().getFromYn() && shotRow <= ship.getCoords().getToYn())) {
+                            isHitOnShip = true;
+                            isSankAShip = ship.isFinalHit(shotRow - ship.getCoords().getFromYn());
+                            this.board[shotRow][shotColumn] = CELL_HIT;
+                            break;
+                        }
+                    }
+                }
+
+                if (isHitOnShip && !isSankAShip) {
+                    printBoard(true);
+                    System.out.println("You hit a ship! Try again:");
+                } else if (isSankAShip) {
+                    printBoard(true);
+                    for (Ship ship : ships) {
+                        if (!ship.getIsDead()) {
+                            System.out.println("You sank a ship! Specify a new target:");
+                            isEndGame = false;
+                            break;
+                        }
+                    }
+                    if (isEndGame) {
+                        System.out.println("You sank the last ship. You won. Congratulations!");
+                        break;
+                    }
+
+                } else {
                     this.board[shotRow][shotColumn] = CELL_MISS;
                     printBoard(true);
-                    System.out.println("You missed!");
-                } else {
-                    this.board[shotRow][shotColumn] = CELL_HIT;
-                    printBoard(true);
-                    System.out.println("You hit a ship!");
+                    System.out.println("You missed! Try again:");
                 }
-                break;
             }
         }
-        printBoard(false);
 
     }
+
     public Battleship() {
         this.initializeBoard();
         this.initializeShips();

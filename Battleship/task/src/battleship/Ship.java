@@ -1,10 +1,14 @@
 package battleship;
 
+import java.util.Arrays;
+
 public class Ship {
 
     private int index;
     private String name;
     private int cellsAmount;
+    private String[] cells;
+    private boolean isDead = false;
 
     public boolean isPlaced() {
         return isPlaced;
@@ -21,6 +25,8 @@ public class Ship {
         this.index = index;
         this.name = name;
         this.cellsAmount = cellsAmount;
+        this.cells = new String[cellsAmount];
+        Arrays.fill(this.cells, "O");
     }
 
     public String getName() {
@@ -47,8 +53,23 @@ public class Ship {
         this.index = index;
     }
 
+    public boolean getIsDead(){
+        return isDead;
+    }
+
     public void placeShip(Coordinates cords){
         isPlaced = true;
         coords = cords;
+    }
+
+    public boolean isFinalHit(int idx){
+        this.cells[idx] = "X";
+        for (String s: this.cells){
+            if (!s.equals("X")){
+                return false;
+            }
+        }
+        this.isDead = true;
+        return true;
     }
 }

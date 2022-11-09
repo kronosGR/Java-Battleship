@@ -369,6 +369,440 @@ files:
         }
     }
   learner_created: false
+- name: src/battleship/Coordinates.java
+  visible: true
+  text: |
+    package battleship;
+
+    import java.util.regex.Matcher;
+    import java.util.regex.Pattern;
+
+    public class Coordinates {
+        private String from;
+        private String to;
+        private int width = 10;
+        private int height = 10;
+
+        public Coordinates(String cords) {
+            String[] tmp = cords.split(" ");
+            this.from = tmp[0];
+            this.to = tmp[1];
+        }
+
+        public String getFrom() {
+            return from;
+        }
+
+        public String getTo() {
+            return to;
+        }
+
+        public String getFromX() {
+            return from.substring(1);
+        }
+
+        public int getFromXn() {
+            return Integer.parseInt(getFromX());
+        }
+        public String getFromY() {
+            return String.valueOf(from.charAt(0));
+        }
+
+        public int getFromYn() {
+            return letterToIndex(getFromY());
+        }
+
+        public String getToX() {
+            return to.substring(1);
+        }
+
+        public int getToXn() {
+            return Integer.parseInt(getToX());
+        }
+
+        public String getToY() {
+            return String.valueOf(to.charAt(0));
+        }
+
+
+        public int getToYn() {
+            return letterToIndex(getToY());
+        }
+
+        public void setFrom(String value) {
+            from = value;
+        }
+
+        public void setTo(String value) {
+            to = value;
+        }
+
+        public static boolean isValidCords(String cords) {
+            Pattern pat = Pattern.compile("[a-jA-J]([1-9]|10) [a-jA-J]([1-9]|10)");
+            Matcher matcher = pat.matcher(cords);
+            return matcher.find();
+        }
+
+        public static String indexToLetter(int idx) {
+            switch (idx) {
+                case 0:
+                    return "a";
+                case 1:
+                    return "b";
+                case 2:
+                    return "c";
+                case 3:
+                    return "d";
+                case 4:
+                    return "e";
+                case 5:
+                    return "f";
+                case 6:
+                    return "g";
+                case 7:
+                    return "h";
+                case 8:
+                    return "i";
+                case 9:
+                    return "j";
+            }
+            return "";
+        }
+
+        public static int letterToIndex(String letter) {
+            switch (letter.toLowerCase()) {
+                case "a":
+                    return 0;
+                case "b":
+                    return 1;
+                case "c":
+                    return 2;
+                case "d":
+                    return 3;
+                case "e":
+                    return 4;
+                case "f":
+                    return 5;
+                case "g":
+                    return 6;
+                case "h":
+                    return 7;
+                case "i":
+                    return 8;
+                case "j":
+                    return 9;
+            }
+            return -1;
+        }
+        public boolean isOnTopEdge(int num){
+            return num == 0;
+        }
+
+        public boolean isOnBottomEdge(int num){
+            return num == height;
+        }
+
+        public boolean isOnLeftEdge(int num){
+            return num == 0;
+        }
+
+        public boolean isOnRightEdge(int num){
+            return num == width;
+        }
+    }
+  learner_created: true
+- name: src/battleship/Ship.java
+  visible: true
+  text: |
+    package battleship;
+
+    public class Ship {
+
+        private int index;
+        private String name;
+        private int cellsAmount;
+
+        public boolean isPlaced() {
+            return isPlaced;
+        }
+
+        public Coordinates getCoords() {
+            return coords;
+        }
+
+        private boolean isPlaced = false;
+        private Coordinates coords;
+
+        public Ship(int index, String name, int cellsAmount) {
+            this.index = index;
+            this.name = name;
+            this.cellsAmount = cellsAmount;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getCellsAmount() {
+            return cellsAmount;
+        }
+
+        public void setCellsAmount(int cellsAmount) {
+            this.cellsAmount = cellsAmount;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        public void placeShip(Coordinates cords){
+            isPlaced = true;
+            coords = cords;
+        }
+    }
+  learner_created: true
+- name: src/battleship/Battleship.java
+  visible: true
+  text: |
+    package battleship;
+
+    import java.util.ArrayList;
+    import java.util.Arrays;
+    import java.util.List;
+    import java.util.Scanner;
+
+    import static battleship.Coordinates.indexToLetter;
+    import static battleship.Coordinates.letterToIndex;
+
+    public class Battleship {
+        private String[][] board = new String[10][10];
+        private List<Ship> ships = new ArrayList<>();
+        Ship[] placedShips;
+        private Scanner sc = new Scanner(System.in);
+
+        private static String CELL_SHIP = "O";
+        private static String CELL_EMPTY = "~";
+        private static String CELL_HIT = "X";
+        private static String CELL_MISS = "M";
+
+
+        private void initializeBoard() {
+            Arrays.stream(this.board).forEach(row -> Arrays.fill(row, CELL_EMPTY));
+        }
+
+        private void initializeShips() {
+            ships.add(new Ship(1, "Aircraft Carrier", 5));
+            ships.add(new Ship(2, "Battleship", 4));
+            ships.add(new Ship(3, "Submarine", 3));
+            ships.add(new Ship(4, "Cruiser", 3));
+            ships.add(new Ship(5, "Destroyer", 2));
+        }
+
+        private void printBoard(boolean fow) {
+            int len = this.board.length;
+            System.out.println("  1 2 3 4 5 6 7 8 9 10");
+            for (int y = 0; y < len; y++) {
+                System.out.print(indexToLetter(y).toUpperCase());
+                for (int x = 0; x < this.board[y].length; x++) {
+                    if (fow && this.board[y][x].equals(CELL_SHIP)) {
+                        System.out.print(" ~" );
+                    } else {
+                        System.out.print(" " + this.board[y][x]);
+                    }
+                }
+                System.out.println();
+            }
+        }
+
+        private Ship getShipWithIndex(int index) {
+            for (Ship tmp : ships) {
+                if (tmp.getIndex() == index) {
+                    return tmp;
+                }
+            }
+            return null;
+        }
+
+        private boolean isSizeCorrect(Ship ship, Coordinates cords) {
+            if (goingVertically(cords.getFromX(), cords.getToX())) {
+                return Math.abs(letterToIndex(cords.getToY()) - letterToIndex(cords.getFromY())) == ship.getCellsAmount() - 1;
+            } else if (goingHorizontally(cords.getFromY(), cords.getToY())) {
+                return Math.abs(Integer.parseInt(cords.getToX()) - Integer.parseInt(cords.getFromX())) == ship.getCellsAmount() - 1;
+            }
+            return false;
+        }
+
+        private boolean isLine(Coordinates cords) {
+            return cords.getToX().equals(cords.getFromX()) || cords.getToY().equals(cords.getFromY());
+        }
+
+        private boolean isClose(Ship _ship, Coordinates coords) {
+            for (Ship ship : ships) {
+                if (ship != _ship && ship.isPlaced()) {
+                    for (int i = coords.getFromYn(); i <= coords.getToYn() + 1; i++) {
+                        for (int j = coords.getFromXn(); j <= coords.getToXn() + 1; j++) {
+                            if ((i == ship.getCoords().getFromYn() && j == ship.getCoords().getFromXn())
+                                    || (i == ship.getCoords().getToYn() && j == ship.getCoords().getToXn())) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void addShip(Ship ship, Coordinates cords) {
+
+            if (goingVertically(cords.getFromX(), cords.getToX())) {
+                // vertically
+                for (int i = 0; i < ship.getCellsAmount(); i++) {
+                    board[letterToIndex(cords.getFromY()) + i][Integer.parseInt(cords.getFromX()) - 1] = CELL_SHIP;
+                    ship.placeShip(cords);
+                }
+            } else if (goingHorizontally(cords.getFromY(), cords.getToY())) {
+                // horizontally
+                for (int i = 0; i < ship.getCellsAmount(); i++) {
+                    board[letterToIndex(cords.getFromY())][Integer.parseInt(cords.getFromX()) + i - 1] = CELL_SHIP;
+                    ship.placeShip(cords);
+                }
+            }
+        }
+
+        private static Coordinates checkCordsAndReverse(Coordinates cords) {
+            // check and reverse cords
+            if (Integer.parseInt(cords.getFromX()) > Integer.parseInt(cords.getToX())
+                    || letterToIndex(cords.getFromY()) > letterToIndex(cords.getToY())) {
+                String tmp = cords.getFrom();
+                cords.setFrom(cords.getTo());
+                cords.setTo(tmp);
+            }
+            return cords;
+        }
+
+        private static boolean goingVertically(String fromX, String toX) {
+            return fromX.equals(toX);
+        }
+
+        private static boolean goingHorizontally(String fromY, String toY) {
+            return fromY.equals(toY);
+        }
+
+        private void askForShips() {
+            for (int i = 1; i <= ships.size(); i++) {
+                Ship tmp = getShipWithIndex(i);
+                int shipLength = tmp.getCellsAmount();
+                System.out.println();
+                String text = String.format("Enter the coordinates of the %s (%d cells):", tmp.getName(), shipLength);
+                System.out.println(text);
+
+                // ask for coordinates
+                String coords = sc.nextLine();
+                if (Coordinates.isValidCords(coords)) {
+                    Coordinates cords = new Coordinates(coords);
+                    cords = checkCordsAndReverse(cords);
+
+                    // check if is line
+                    if (!isLine(cords)) {
+                        System.out.println("Error! Wrong ship location! Try again:");
+                        while (true) {
+                            coords = sc.nextLine();
+                            Coordinates tmpC = new Coordinates(coords);
+                            cords = checkCordsAndReverse(tmpC);
+                            if (isLine(cords)) {
+                                break;
+                            }
+                            System.out.println("Error! Wrong ship location! Try again:");
+                        }
+                    }
+
+                    // check if size is correct
+                    if (!isSizeCorrect(tmp, cords)) {
+                        System.out.println("Error! Wrong length of the " + tmp.getName() + "! Try again:");
+                        while (true) {
+                            coords = sc.nextLine();
+                            Coordinates tmpC = new Coordinates(coords);
+                            cords = checkCordsAndReverse(tmpC);
+                            if (isSizeCorrect(tmp, cords)) {
+                                break;
+                            }
+                            System.out.println("Error! Wrong length of the " + tmp.getName() + "! Try again:");
+                        }
+                    }
+
+                    // check if close to another
+                    if (isClose(tmp, cords)) {
+                        System.out.println("Error! You placed it too close to another one. Try again:");
+                        while (true) {
+                            coords = sc.nextLine();
+                            Coordinates tmpC = new Coordinates(coords);
+                            cords = checkCordsAndReverse(tmpC);
+                            if (!isClose(tmp, cords)) {
+                                break;
+                            }
+                            System.out.println("Error! You placed it too close to another one. Try again:");
+                        }
+                    }
+
+                    addShip(tmp, cords);
+                    printBoard(false);
+                }
+
+            }
+        }
+
+        private void makeShot(){
+            System.out.println();
+            System.out.println("The game starts!");
+            System.out.println();
+            printBoard(true);
+            System.out.println("Take a shot");
+
+            while(true){
+                String cell = sc.nextLine();
+                int shotRow = cell.charAt(0) - 65;
+                int shotColumn = Integer.parseInt(cell.substring(1)) - 1;
+                if (shotRow < 0 || shotRow > 9 || shotColumn < 0 || shotColumn > 9) {
+                    System.out.println("Error! You entered the wrong coordinates! Try again:");
+                } else {
+                    if (this.board[shotRow][shotColumn] == CELL_EMPTY) {
+                        this.board[shotRow][shotColumn] = CELL_MISS;
+                        printBoard(true);
+                        System.out.println("You missed!");
+                    } else {
+                        this.board[shotRow][shotColumn] = CELL_HIT;
+                        printBoard(true);
+                        System.out.println("You hit a ship!");
+                    }
+                    break;
+                }
+            }
+            printBoard(false);
+
+        }
+        public Battleship() {
+            this.initializeBoard();
+            this.initializeShips();
+        }
+
+        public void start() {
+            this.printBoard(false);
+            this.askForShips();
+            this.makeShot();
+        }
+    }
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/10597#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Wed, 09 Nov 2022 11:09:23 UTC
 record: -1
