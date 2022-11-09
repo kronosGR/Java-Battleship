@@ -207,7 +207,7 @@ public class Battleship {
                     if (shotRow == ship.getCoords().getFromYn() && shotRow == ship.getCoords().getToYn()) {
                         if (shotColumn >= ship.getCoords().getFromXn() - 1 && shotColumn <= ship.getCoords().getToXn() - 1) {
                             isHitOnShip = true;
-                            isSankAShip = ship.isFinalHit(shotColumn - ship.getCoords().getFromXn()+1);
+                            isSankAShip = ship.isFinalHit(shotColumn - ship.getCoords().getFromXn() + 1);
                             this.board[shotRow][shotColumn] = CELL_HIT;
                             break;
                         }
