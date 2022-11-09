@@ -32,13 +32,17 @@ public class Battleship {
         ships.add(new Ship(5, "Destroyer", 2));
     }
 
-    private void printBoard() {
+    private void printBoard(boolean fow) {
         int len = this.board.length;
         System.out.println("  1 2 3 4 5 6 7 8 9 10");
         for (int y = 0; y < len; y++) {
             System.out.print(indexToLetter(y).toUpperCase());
             for (int x = 0; x < this.board[y].length; x++) {
-                System.out.print(" " + this.board[y][x]);
+                if (fow && this.board[y][x].equals(CELL_SHIP)) {
+                    System.out.print(" ~" );
+                } else {
+                    System.out.print(" " + this.board[y][x]);
+                }
             }
             System.out.println();
         }
@@ -175,14 +179,17 @@ public class Battleship {
                 }
 
                 addShip(tmp, cords);
-                printBoard();
+                printBoard(false);
             }
 
         }
     }
 
     private void makeShot(){
+        System.out.println();
         System.out.println("The game starts!");
+        System.out.println();
+        printBoard(true);
         System.out.println("Take a shot");
 
         while(true){
@@ -194,16 +201,17 @@ public class Battleship {
             } else {
                 if (this.board[shotRow][shotColumn] == CELL_EMPTY) {
                     this.board[shotRow][shotColumn] = CELL_MISS;
-                    printBoard();
+                    printBoard(true);
                     System.out.println("You missed!");
                 } else {
                     this.board[shotRow][shotColumn] = CELL_HIT;
-                    printBoard();
+                    printBoard(true);
                     System.out.println("You hit a ship!");
                 }
                 break;
             }
         }
+        printBoard(false);
 
     }
     public Battleship() {
@@ -212,7 +220,7 @@ public class Battleship {
     }
 
     public void start() {
-        this.printBoard();
+        this.printBoard(false);
         this.askForShips();
         this.makeShot();
     }
